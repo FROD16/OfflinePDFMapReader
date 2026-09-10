@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Offline GeoPDF navigator with device GPS positioning.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GeoPDF Navigator">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; worker-src 'self' https://cdnjs.cloudflare.com blob:; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; font-src 'self'; manifest-src 'self';">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>GeoPDF Navigator</title>
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <div class="eyebrow">OFFLINE FIELD MAP</div>
+      <h1>GeoPDF Navigator</h1>
+    </div>
+    <div class="header-status" id="networkStatus" aria-live="polite">Checking…</div>
+  </header>
+
+  <main class="app-shell">
+    <section class="toolbar" aria-label="Map controls">
+      <label class="file-button">
+        <input id="pdfInput" type="file" accept="application/pdf,.pdf">
+        <span>Load GeoPDF</span>
+      </label>
+      <button id="locateButton" type="button">Locate me</button>
+      <button id="centerButton" type="button" disabled>Center</button>
+      <button id="minusButton" type="button" disabled aria-label="Zoom out">−</button>
+      <button id="plusButton" type="button" disabled aria-label="Zoom in">+</button>
+      <button id="fitButton" type="button" disabled>Fit</button>
+      <button id="clearButton" type="button" class="secondary" disabled>Clear</button>
+    </section>
+
+    <section class="map-card">
+      <div id="mapViewport" class="map-viewport" aria-label="GeoPDF map viewport">
+        <div id="mapStage" class="map-stage" hidden>
+          <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+          <div id="markerLayer" class="marker-layer">
+            <div id="accuracyCircle" class="accuracy-circle" hidden></div>
+            <div id="locationMarker" class="location-marker" hidden title="Device location"></div>
+          </div>
+        </div>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">⌖</div>
+          <h2>Load a georeferenced PDF</h2>
+          <p>Choose an ArcGIS/GeoPDF file. The app reads the embedded geographic map frame and keeps the PDF on this device for offline use.</p>
+          <label class="file-button large">
+            <input id="pdfInputSecondary" type="file" accept="application/pdf,.pdf">
+            <span>Choose PDF</span>
+          </label>
+        </div>
+        <div id="loadingState" class="loading-state" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <span id="loadingText">Loading PDF…</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <article class="panel">
+        <div class="panel-heading">Device position</div>
+        <div class="coords-row">
+          <div>
+            <div class="label">Latitude</div>
+            <div id="latValue" class="value mono">—</div>
+          </div>
+          <div>
+            <div class="label">Longitude</div>
+            <div id="lonValue" class="value mono">—</div>
+          </div>
+        </div>
+        <div class="detail-row"><span>Accuracy</span><strong id="accuracyValue">—</strong></div>
+        <div class="detail-row"><span>GPS status</span><strong id="gpsStatus">Not requested</strong></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">Map</div>
+        <div class="detail-row"><span>File</span><strong id="fileName">—</strong></div>
+        <div class="detail-row"><span>GeoPDF</span><strong id="geoStatus">—</strong></div>
+        <div class="detail-row"><span>CRS</span><strong id="crsValue">—</strong></div>
+        <div class="detail-row"><span>Offline copy</span><strong id="offlinePdfStatus">—</strong></div>
+      </article>
+    </section>
+
+    <section class="notice" id="message" aria-live="polite">Load a GeoPDF to begin.</section>
+
+    <section class="help panel">
+      <div class="panel-heading">Field use</div>
+      <p>Load the PDF once while online, grant location permission, and confirm “Offline ready.” Then the app can be reopened without cellular or Wi-Fi; the PDF remains in device storage and GPS is provided by the device.</p>
+      <p class="small">Tip: use the browser's “Add to Home Screen” / “Install app” option after the first successful load.</p>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
